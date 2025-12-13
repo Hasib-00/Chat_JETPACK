@@ -13,15 +13,17 @@ class AuthRepository {
     /**
      * Register user
      */
-    suspend fun signUp(email: String, password: String): Boolean {
+    suspend fun signUp(email: String, password: String, username: String?):  Boolean {
         return try {
             val result = auth.createUserWithEmailAndPassword(email, password).await()
             val firebaseUser = result.user ?: return false
 
             val userData = UserModel(
                 id = firebaseUser.uid,
-                email = email
-            )
+                email = email,
+                username = username
+
+                )
 
             db.collection("users")
                 .document(firebaseUser.uid)
@@ -48,4 +50,11 @@ class AuthRepository {
             false
         }
     }
+    suspend fun getCurrentUser(): UserModel? {
+        val uid = auth.currentUser?.uid ?: return null
+        val snapshot = db.collection("users").document(uid).get().await()
+        return snapshot.toObject(UserModel::class.java)
+    }
+
+
 }

@@ -17,17 +17,21 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.tooling.preview.Preview
+import androidx.navigation.NavController
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.chat.auth.AnimatedTextField
 import com.example.chat.home.HomeViewModel
 
-@Preview(showSystemUi = true)
+
 
 @Composable
 fun ProfileScreen(
-    vm: ProfileViewModel = viewModel(),
+    navController: NavController,
+
+    modifier: Modifier = Modifier,
+
+    vm: ProfileViewModel = viewModel()
 ){
 
     var username by remember { mutableStateOf("") }
@@ -43,11 +47,12 @@ fun ProfileScreen(
                 username = it
             },
             placeholder = "Enter your Password",
-            isPassword = true
+            isPassword = false
         )
 
         Button(
             onClick = {
+                vm.updateUsername(username)
             },
             modifier = Modifier
                 .fillMaxWidth()

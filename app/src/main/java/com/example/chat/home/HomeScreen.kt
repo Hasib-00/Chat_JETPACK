@@ -96,8 +96,13 @@ fun MessengerChatCard(
                 .background(Color(0xFF1877F2)),
             contentAlignment = Alignment.Center
         ) {
+            val avatarLetter = (
+                    user.username?.firstOrNull { it.isLetterOrDigit() }
+                        ?: user.email?.firstOrNull()
+                    )?.uppercase() ?: "?"
+
             Text(
-                text = user.email.first().uppercase(),
+                text = avatarLetter,
                 color = Color.White,
                 fontSize = 20.sp,
                 fontWeight = FontWeight.Bold
@@ -110,8 +115,10 @@ fun MessengerChatCard(
         Column(
             modifier = Modifier.weight(1f)
         ) {
+            val displayName = if (!user.username.isNullOrBlank()) user.username else user.email.orEmpty()
+
             Text(
-                text = user.email,
+                text = displayName,
                 fontWeight = FontWeight.SemiBold,
                 fontSize = 16.sp,
                 maxLines = 1,

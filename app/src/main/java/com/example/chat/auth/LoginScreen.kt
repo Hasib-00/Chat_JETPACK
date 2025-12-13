@@ -103,7 +103,7 @@ fun LoginScreen(
                             )
                         }
                         if (success) {
-                            navController.navigate("Home") {
+                            navController.navigate("Main") {
                                 popUpTo("Login") { inclusive = true }
                             }
                         }

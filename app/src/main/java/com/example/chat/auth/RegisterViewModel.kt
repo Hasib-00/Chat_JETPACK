@@ -11,6 +11,9 @@ class RegisterViewModel : ViewModel() {
     var email = ""
     var password = ""
     var repassword = ""
+    var username = ""
+
+
 
     var loading = false
     var registered = false
@@ -29,7 +32,7 @@ class RegisterViewModel : ViewModel() {
             loading = true
             error = null
 
-            val success = repo.signUp(email, password)
+            val success = repo.signUp(email, password,username)
 
             loading = false
             registered = success

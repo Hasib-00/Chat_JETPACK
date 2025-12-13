@@ -23,6 +23,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.navigation.NavController
+import com.example.chat.Profile.ProfileScreen
 import com.example.sent.home.HomeScreen
 
 data class NavItem(
@@ -75,7 +76,8 @@ fun MainScreen(navController: NavController) {
                 }
             )
             // 1 -> ChatScreen(modifier = Modifier.padding(paddingValues))
-            // 2 -> ProfileScreen(modifier = Modifier.padding(paddingValues))
+             2 -> ProfileScreen(modifier = Modifier.padding(paddingValues),
+                 navController = navController)
         }
     }
 }
