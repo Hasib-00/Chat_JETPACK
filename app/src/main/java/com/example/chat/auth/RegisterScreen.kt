@@ -36,7 +36,7 @@ fun RegisterScreen(
     Box(
         modifier = Modifier
             .fillMaxSize()
-            .background(Color(0xFFF2F2F2))   // ← change to any color
+            .background(Color(0xFFFFFFFF))   // ← change to any color
     ) {
         Scaffold(
             snackbarHost = { SnackbarHost(snackbarHostState) },
@@ -113,7 +113,10 @@ fun RegisterScreen(
                             if (success) navController.navigate("Login")
                         }
                     },
-                    modifier = Modifier.fillMaxWidth().height(46.dp),
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(46.dp)
+                        .padding(horizontal = 25.dp),
                     shape = RoundedCornerShape(12.dp),
                     colors = ButtonDefaults.buttonColors(Color.Black)
                 ) {

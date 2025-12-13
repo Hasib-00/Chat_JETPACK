@@ -29,10 +29,11 @@ import androidx.navigation.NavController
 import com.example.chat.R
 import kotlinx.coroutines.launch
 
+
 @Composable
 fun LoginScreen(
     navController: NavController,
-    vm: LoginViewModel = viewModel(),
+    vm: LoginViewModel = viewModel()
 ) {
     var email by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
@@ -41,142 +42,154 @@ fun LoginScreen(
     val scope = rememberCoroutineScope()
 
 
-    Box(
-        modifier = Modifier
-            .fillMaxSize()
-            .background(Color(0xFFFFFFFF))
-    ) {
-        Scaffold(
-            snackbarHost = { SnackbarHost(snackbarHostState) },
-            containerColor = Color.Transparent, // important!
-            contentColor = Color.Black
-        ) { padding ->
 
-            Column(
+    Scaffold(
+        snackbarHost = { SnackbarHost(snackbarHostState) },
+        containerColor = Color.White
+
+
+    ) { padding ->
+
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(padding)
+                .verticalScroll(rememberScrollState())
+                .padding(horizontal = 20.dp)
+        ) {
+
+            Spacer(Modifier.height(40.dp))
+
+            Text(
+                text = "Login",
+                modifier = Modifier.fillMaxWidth(),
+                textAlign = TextAlign.Center,
+                fontSize = 34.sp,
+                fontWeight = FontWeight.Bold
+            )
+
+            Spacer(Modifier.height(200.dp))
+
+            AnimatedTextField(
+                value = email,
+                onValueChange = {
+                    email = it
+                    vm.email = it
+                },
+                placeholder = "Enter your Email"
+            )
+
+            Spacer(Modifier.height(20.dp))
+
+            AnimatedTextField(
+                value = password,
+                onValueChange = {
+                    password = it
+                    vm.password = it
+                },
+                placeholder = "Enter your Password",
+                isPassword = true
+            )
+
+            Spacer(Modifier.height(90.dp))
+
+            Button(
+                onClick = {
+                    vm.login { success ->
+                        scope.launch {
+                            snackbarHostState.showSnackbar(
+                                if (success) "Login Successful"
+                                else vm.error ?: "Login failed"
+                            )
+                        }
+                        if (success) {
+                            navController.navigate("Home") {
+                                popUpTo("Login") { inclusive = true }
+                            }
+                        }
+                    }
+                },
                 modifier = Modifier
-                    .fillMaxSize()
-                    .padding(padding)
-                    .verticalScroll(rememberScrollState())
-                    .padding(horizontal = 20.dp)
+                    .fillMaxWidth()
+                    .height(46.dp)
+                .padding(horizontal = 25.dp),
+                shape = RoundedCornerShape(12.dp),
+                colors = ButtonDefaults.buttonColors(containerColor = Color.Black)
+            ) {
+                Text("Login", color = Color.White)
+            }
+
+            Spacer(Modifier.height(20.dp))
+
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.Center
+            ) {
+                Text("Don't have an account? ")
+                Text(
+                    "Register",
+                    fontWeight = FontWeight.Bold,
+                    modifier = Modifier.clickable {
+                        navController.navigate("Register")
+                    }
+                )
+            }
+
+
+
+
+
+            Spacer(Modifier.height(50.dp))
+
+            Button(
+                onClick = { },
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(46.dp),
+                shape = RoundedCornerShape(12.dp),
+                colors = ButtonDefaults.buttonColors(containerColor = Color(0xD5E1E1E1))
             ) {
 
-                Spacer(Modifier.height(40.dp))
-
+                Icon(
+                    painter = painterResource(R.drawable.google),
+                    contentDescription = "Google",
+                    tint = Color.Unspecified
+                )
+                Spacer(Modifier.width(8.dp))
                 Text(
-                    text = "Login",
-                    modifier = Modifier.fillMaxWidth(),
-                    textAlign = TextAlign.Center,
-                    fontSize = 34.sp,
-                    fontWeight = FontWeight.Bold
+                    text = "Sign in with Google",
+                    color = Color.Black,
+                    fontSize = 15.sp
+
                 )
+            }
 
-                Spacer(Modifier.height(200.dp))
+            Spacer(Modifier.height(30.dp))
+            Button(
+                onClick = { },
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(46.dp),
+                shape = RoundedCornerShape(12.dp),
+                colors = ButtonDefaults.buttonColors(containerColor = Color(0xD5E1E1E1))
+            ) {
 
-                AnimatedTextField(
-                    value = email,
-                    onValueChange = {
-                        email = it
-                        vm.email = it
-                    },
-                    placeholder = "Enter your Email"
+                Icon(
+                    painter = painterResource(R.drawable.apple),
+                    contentDescription = "apple",
+                    tint = Color.Unspecified
                 )
-
-                Spacer(Modifier.height(20.dp))
-
-                AnimatedTextField(
-                    value = password,
-                    onValueChange = {
-                        password = it
-                        vm.password = it
-                    },
-                    placeholder = "Enter your Password",
-                    isPassword = true
+                Spacer(Modifier.width(8.dp))
+                Text(
+                    text = "Sign in with apple",
+                    color = Color.Black,
+                    fontSize = 15.sp
                 )
-
-                Spacer(Modifier.height(90.dp))
-
-                Button(
-                    onClick = {
-                        vm.login { success ->
-                            scope.launch {
-                                snackbarHostState.showSnackbar(
-                                    if (success) "Login Successful!" else vm.error ?: "Login failed"
-                                )
-                            }
-                            if (success) navController.navigate("Home")
-                        }
-                    },
-                    modifier = Modifier.fillMaxWidth()
-                        .height(46.dp)
-                        .padding(horizontal = 25.dp),
-                    shape = RoundedCornerShape(12.dp),
-                    colors = ButtonDefaults.buttonColors(containerColor = Color.Black)
-                ) {
-                    Text("Login", color = Color.White, fontSize = 17.sp)
-                }
-
-                Spacer(Modifier.height(20.dp))
-
-                Row(
-                    modifier = Modifier.fillMaxWidth(),
-                    horizontalArrangement = Arrangement.Center
-                ) {
-                    Text("Don't have an account? ")
-                    Text(
-                        "Register",
-                        fontWeight = FontWeight.Bold,
-                        color = Color.Black,
-                        modifier = Modifier.clickable { navController.navigate("Register") }
-                    )
-                }
-
-                Spacer(Modifier.height(50.dp))
-
-                Button(
-                    onClick = { },
-                    modifier = Modifier.fillMaxWidth().height(46.dp),
-                    shape = RoundedCornerShape(12.dp),
-                    colors = ButtonDefaults.buttonColors(containerColor = Color(0xD5E1E1E1))
-                ) {
-
-                    Icon(
-                        painter = painterResource(R.drawable.google),
-                        contentDescription = "Google",
-                        tint = Color.Unspecified
-                        )
-                    Spacer(Modifier.width(8.dp))
-                    Text(
-                        text = "Sign in with Google",
-                        color = Color.Black,
-                        fontSize = 15.sp
-
-                    )
-                }
-
-                Spacer(Modifier.height(30.dp))
-                Button(
-                    onClick = { },
-                    modifier = Modifier.fillMaxWidth().height(46.dp),
-                    shape = RoundedCornerShape(12.dp),
-                    colors = ButtonDefaults.buttonColors(containerColor = Color(0xD5E1E1E1))
-                ) {
-
-                    Icon(
-                        painter = painterResource(R.drawable.apple),
-                        contentDescription = "apple",
-                        tint = Color.Unspecified
-                    )
-                    Spacer(Modifier.width(8.dp))
-                    Text(
-                        text = "Sign in with apple",
-                        color = Color.Black,
-                        fontSize = 15.sp
-                    )
-                }
             }
         }
     }
 }
+
 
 @Composable
 fun AnimatedTextField(
