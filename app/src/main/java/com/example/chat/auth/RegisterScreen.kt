@@ -104,6 +104,7 @@ fun RegisterScreen(
                 // REGISTER BUTTON
                 Button(
                     onClick = {
+
                         vm.register { success ->
                             scope.launch {
                                 snackbarHostState.showSnackbar(

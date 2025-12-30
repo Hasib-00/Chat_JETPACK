@@ -1,83 +1,59 @@
-package com.example.chat
+package com.example.chat.screens
 
-import android.graphics.drawable.Icon
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Chat
 import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.Person
-import androidx.compose.material.icons.outlined.Chat
-import androidx.compose.material.icons.outlined.Home
-import androidx.compose.material.icons.outlined.Person
-import androidx.compose.material3.Icon
-import androidx.compose.material3.NavigationBar
-import androidx.compose.material3.NavigationBarItem
-import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Text
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
+import androidx.compose.material3.*
+import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.navigation.NavController
 import com.example.chat.Profile.ProfileScreen
-import com.example.sent.home.HomeScreen
-
-data class NavItem(
-    val title: String,
-    val selectedicon: ImageVector,
-    val unselectedicon: ImageVector
-)
-
-val navItem = listOf(
-    NavItem("Home", Icons.Filled.Home, Icons.Outlined.Home),
-    NavItem("Chat", Icons.Filled.Chat, Icons.Outlined.Chat),
-    NavItem("Profile", Icons.Filled.Person, Icons.Outlined.Person)
-)
+import com.example.chat.home.HomeScreen
 
 @Composable
 fun MainScreen(navController: NavController) {
-    var selectedIndex by remember { mutableStateOf(0) }
+
+    val tabs = listOf("Home", "Chat", "Profile")
+    var selectedTab by remember { mutableStateOf(0) }
 
     Scaffold(
-        modifier = Modifier.fillMaxSize(),
         bottomBar = {
             NavigationBar {
-                navItem.forEachIndexed { index, item ->
+                tabs.forEachIndexed { i, t ->
                     NavigationBarItem(
-                        selected = selectedIndex == index,
-                        onClick = {
-                            selectedIndex = index
-                        },
+                        selected = selectedTab == i,
+                        onClick = { selectedTab = i },
                         icon = {
                             Icon(
-                                imageVector =
-                                    if (index == selectedIndex)
-                                        item.selectedicon
-                                    else
-                                        item.unselectedicon,
-                                contentDescription = item.title
+                                imageVector = when (t) {
+                                    "Home" -> Icons.Filled.Home
+                                    "Chat" -> Icons.Filled.Chat
+                                    else -> Icons.Filled.Person
+                                },
+                                contentDescription = null
                             )
                         },
-                        label = { Text(item.title) }
+                        label = { Text(t) }
                     )
                 }
             }
         }
-    ) { paddingValues ->
-        when (selectedIndex) {
+    ) { padding ->
+
+        when (selectedTab) {
             0 -> HomeScreen(
-                modifier = Modifier.padding(paddingValues),
-                onChat = { userId ->
-                    navController.navigate("chat/$userId")
+                modifier = Modifier.padding(padding),
+                onChatClick = { user ->
+                    navController.navigate("chat/${user.id}")
                 }
             )
-            // 1 -> ChatScreen(modifier = Modifier.padding(paddingValues))
-             2 -> ProfileScreen(modifier = Modifier.padding(paddingValues),
-                 navController = navController)
+            // 1 -> could be recent chats tab later
+            2 -> ProfileScreen(
+                navController = navController,
+                modifier = Modifier.padding(padding)
+            )
         }
     }
 }

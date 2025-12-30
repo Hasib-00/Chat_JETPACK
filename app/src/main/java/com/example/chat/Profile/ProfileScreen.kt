@@ -28,11 +28,10 @@ import com.example.chat.home.HomeViewModel
 @Composable
 fun ProfileScreen(
     navController: NavController,
-
     modifier: Modifier = Modifier,
-
     vm: ProfileViewModel = viewModel()
-){
+)
+{
 
     var username by remember { mutableStateOf("") }
     Column(

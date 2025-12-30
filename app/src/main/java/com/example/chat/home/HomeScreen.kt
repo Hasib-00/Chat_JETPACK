@@ -1,4 +1,4 @@
-package com.example.sent.home
+package com.example.chat.home
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -17,25 +17,21 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
-import com.example.chat.home.HomeViewModel
 import com.example.chat.model.UserModel
 
 @Composable
 fun HomeScreen(
     modifier: Modifier = Modifier,
     vm: HomeViewModel = viewModel(),
-    onChat: (String) -> Unit,
-
+    onChatClick: (UserModel) -> Unit
 ) {
     val state by vm.state.collectAsState()
 
     Column(
-        modifier = Modifier
+        modifier = modifier
             .fillMaxSize()
             .background(Color.White)
     ) {
-
-        // Top title (Messenger style)
         Text(
             text = "Chats",
             fontSize = 26.sp,
@@ -49,7 +45,7 @@ fun HomeScreen(
                     modifier = Modifier.fillMaxSize(),
                     contentAlignment = Alignment.Center
                 ) {
-                    LinearProgressIndicator()
+                    CircularProgressIndicator()
                 }
             }
 
@@ -65,30 +61,28 @@ fun HomeScreen(
             else -> {
                 LazyColumn {
                     items(state.users) { user ->
-                        MessengerChatCard(
-                            user = user,
-                            onChat = onChat
-                        )
+                        MessengerChatCard(user) {
+                            onChatClick(user)
+                        }
                     }
                 }
             }
         }
     }
 }
+
 @Composable
 fun MessengerChatCard(
     user: UserModel,
-    onChat: (String) -> Unit
+    onClick: () -> Unit
 ) {
     Row(
         modifier = Modifier
             .fillMaxWidth()
-            .clickable { onChat(user.id) }
+            .clickable { onClick() }
             .padding(horizontal = 16.dp, vertical = 12.dp),
         verticalAlignment = Alignment.CenterVertically
     ) {
-
-        // Avatar
         Box(
             modifier = Modifier
                 .size(52.dp)
@@ -97,12 +91,12 @@ fun MessengerChatCard(
             contentAlignment = Alignment.Center
         ) {
             val avatarLetter = (
-                    user.username?.firstOrNull { it.isLetterOrDigit() }
-                        ?: user.email?.firstOrNull()
+                    user.username.firstOrNull { it.isLetterOrDigit() }
+                        ?: user.email.firstOrNull()
                     )?.uppercase() ?: "?"
 
             Text(
-                text = avatarLetter,
+                text = avatarLetter.toString(),
                 color = Color.White,
                 fontSize = 20.sp,
                 fontWeight = FontWeight.Bold
@@ -111,14 +105,9 @@ fun MessengerChatCard(
 
         Spacer(Modifier.width(12.dp))
 
-        // Name + last message
-        Column(
-            modifier = Modifier.weight(1f)
-        ) {
-            val displayName = if (!user.username.isNullOrBlank()) user.username else user.email.orEmpty()
-
+        Column(modifier = Modifier.weight(1f)) {
             Text(
-                text = displayName,
+                text = user.username.ifEmpty { user.email },
                 fontWeight = FontWeight.SemiBold,
                 fontSize = 16.sp,
                 maxLines = 1,
@@ -130,13 +119,10 @@ fun MessengerChatCard(
             Text(
                 text = "Tap to start chatting",
                 color = Color.Gray,
-                fontSize = 14.sp,
-                maxLines = 1,
-                overflow = TextOverflow.Ellipsis
+                fontSize = 14.sp
             )
         }
 
-        // Time (placeholder)
         Text(
             text = "Now",
             fontSize = 12.sp,
